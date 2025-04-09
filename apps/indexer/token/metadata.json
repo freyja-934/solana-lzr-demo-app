@@ -1,0 +1,28 @@
+{
+  "name": "LAZR Message Token",
+  "symbol": "LAZR",
+  "description": "A utility token for rewarding on-chain message posters in the LAZR dApp.",
+  "image": "https://wagmi-collectibles.s3.us-east-1.amazonaws.com/freyja/lzr-token.png",
+  "external_url": "https://www.lazertechnologies.com/",
+  "seller_fee_basis_points": 500,
+  "attributes": [
+    {
+      "trait_type": "Utility",
+      "value": "Message Reward"
+    },
+    {
+      "trait_type": "Platform",
+      "value": "Solana"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://wagmi-collectibles.s3.us-east-1.amazonaws.com/freyja/lzr-token.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": []
+  }
+}
