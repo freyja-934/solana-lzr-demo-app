@@ -1,6 +1,6 @@
-# 🔥 Solana Lazer
+# 🔥 Solazer
 
-**Solana Lazer** is a full-stack demo application designed to showcase advanced Solana development using modern tooling. It features custom token minting, wallet airdrops, on-chain message posting via an Anchor smart contract, and real-time UI updates. Built to demonstrate practical system design knowledge and Solana integration.
+**Solana Lazer App** is a full-stack demo application designed to showcase advanced Solana development using modern tooling. It features custom token minting, wallet airdrops, on-chain message posting via an Anchor smart contract, and real-time UI updates. Built to demonstrate practical system design knowledge and Solana integration.
 
 ![App Home Page](docs/assets/home-page.png)
 
