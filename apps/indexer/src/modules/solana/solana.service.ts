@@ -1,19 +1,19 @@
 import {
-    createFungible,
-    fetchMetadataFromSeeds,
-    mplTokenMetadata,
+  createFungible,
+  fetchMetadataFromSeeds,
+  mplTokenMetadata,
 } from '@metaplex-foundation/mpl-token-metadata';
 import {
-    createAssociatedToken,
-    findAssociatedTokenPda,
-    mintTokensTo,
-    mplToolbox,
-    transferTokens,
+  createAssociatedToken,
+  findAssociatedTokenPda,
+  mintTokensTo,
+  mplToolbox,
+  transferTokens,
 } from '@metaplex-foundation/mpl-toolbox';
 import {
-    generateSigner,
-    keypairIdentity,
-    percentAmount,
+  generateSigner,
+  keypairIdentity,
+  percentAmount,
 } from '@metaplex-foundation/umi';
 import { createUmi as createUmiWithEndpoint } from '@metaplex-foundation/umi-bundle-defaults';
 import { Injectable } from '@nestjs/common';
@@ -80,20 +80,28 @@ export class SolanaService {
     try {
       const mint = new PublicKey(mintAddress);
       const destinationOwner = new PublicKey(destination);
+      
+      console.log('Using identity as mint authority:', this.umi.identity.publicKey.toString());
 
       const associatedTokenPda = findAssociatedTokenPda(this.umi, {
         mint,
         owner: destinationOwner,
       });
 
-      const tokenAccount = await this.umi.rpc.getAccount(associatedTokenPda);
 
+      const tokenAccount = await this.umi.rpc.getAccount(associatedTokenPda);
+      
       if (!tokenAccount.exists) {
         console.log('Creating associated token account...');
-        await createAssociatedToken(this.umi, {
-          mint,
-          owner: destinationOwner,
-        }).sendAndConfirm(this.umi);
+        try {
+          await createAssociatedToken(this.umi, {
+            mint,
+            owner: destinationOwner,
+          }).sendAndConfirm(this.umi);
+        } catch (error) {
+          console.error('Error creating associated token account:', error);
+          console.log('Attempting to mint directly...');
+        }
       } else {
         console.log('Associated token account already exists');
       }
@@ -122,19 +130,26 @@ export class SolanaService {
       console.log(
         `Minting ${amount} tokens (${actualAmount} raw units) to ${destination}...`,
       );
-      const { signature } = await mintTokensTo(this.umi, {
-        mint,
-        token: associatedTokenPda,
-        amount: actualAmount,
-        mintAuthority: this.umi.identity,
-      }).sendAndConfirm(this.umi, {
-        confirm: { commitment: 'processed' },
-        send: { commitment: 'processed' },
-      });
+      
+      try {
+        const { signature } = await mintTokensTo(this.umi, {
+          mint,
+          token: associatedTokenPda,
+          amount: actualAmount,
+          mintAuthority: this.umi.identity,
+        }).sendAndConfirm(this.umi, {
+          confirm: { commitment: 'processed' },
+          send: { commitment: 'processed' },
+        });
 
-      const signatureString = this.bs58.encode(signature);
-
-      return { txId: signatureString };
+        const signatureString = this.bs58.encode(signature);
+        console.log('Minting successful, transaction signature:', signatureString);
+        return { txId: signatureString };
+      } catch (mintError) {
+        console.error('Error during mintTokensTo operation:', mintError);
+        console.error('This may be due to incorrect mint authority. Please verify that the private key in your environment variables corresponds to the mint authority of the token.');
+        throw mintError;
+      }
     } catch (error) {
       console.error('Error minting token:', error);
       throw error;
