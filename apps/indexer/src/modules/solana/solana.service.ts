@@ -1,19 +1,19 @@
 import {
-  createFungible,
-  fetchMetadataFromSeeds,
-  mplTokenMetadata,
+    createFungible,
+    fetchMetadataFromSeeds,
+    mplTokenMetadata,
 } from '@metaplex-foundation/mpl-token-metadata';
 import {
-  createAssociatedToken,
-  findAssociatedTokenPda,
-  mintTokensTo,
-  mplToolbox,
-  transferTokens,
+    createAssociatedToken,
+    findAssociatedTokenPda,
+    mintTokensTo,
+    mplToolbox,
+    transferTokens,
 } from '@metaplex-foundation/mpl-toolbox';
 import {
-  generateSigner,
-  keypairIdentity,
-  percentAmount,
+    generateSigner,
+    keypairIdentity,
+    percentAmount,
 } from '@metaplex-foundation/umi';
 import { createUmi as createUmiWithEndpoint } from '@metaplex-foundation/umi-bundle-defaults';
 import { Injectable } from '@nestjs/common';
@@ -126,6 +126,7 @@ export class SolanaService {
         mint,
         token: associatedTokenPda,
         amount: actualAmount,
+        mintAuthority: this.umi.identity,
       }).sendAndConfirm(this.umi, {
         confirm: { commitment: 'processed' },
         send: { commitment: 'processed' },

@@ -99,7 +99,7 @@ export class EventService implements OnModuleInit {
   private async handleLogs(logs: Logs) {
     if (logs.signature && processedTransactions.has(logs.signature)) {
       console.log(
-        `🔄 Skipping already processed transaction: ${logs.signature}`,
+        `Skipping already processed transaction to prevent dupes: ${logs.signature}`,
       );
       return;
     }
